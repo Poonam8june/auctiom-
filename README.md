@@ -1,4 +1,3 @@
-# auctiom-
 pragma solidity ^0.4.17;
 
 contract Auction {
@@ -19,12 +18,12 @@ contract Auction {
  
       mapping(address => Person) tokenDetails; //address to person
       Person [4] bidders;//Array containing 4 person objects
-       Item [3] public items;//Array containing 3 item objects
-       address[3] public winners;//Array for address of winners
-       address public beneficiary;//owner of the smart contract
-       uint bidderCount=0;//counter
+      Item [3] public items;//Array containing 3 item objects
+      address[3] public winners;//Array for address of winners
+      address public beneficiary;//owner of the smart contract
+      uint bidderCount=0;//counter
 
-     //functions
+        //functions
 
     function Auction() public payable{    //constructor
                 
@@ -82,7 +81,7 @@ contract Auction {
         if (_itemId > 2) return;
         //** End code here. **
         
-        /*Part 1 Task 5. Decrement the remainingTokens by the number of tokens bid and store the value in balance variable.
+        /*Part 1 Task 5. Decrement the remainingTokens by the number of tokens bid
         Hint. "tokenDetails[msg.sender].remainingTokens" should be decremented by "_count". */
  
         // ** Start code here. 1 line approximately. **
@@ -98,13 +97,21 @@ contract Auction {
       }
     }
     
+   /*    For version 2, we need to add a modifier so that only the owner can invoke the function “revealWinner”.
+        Part 2 Task 1. Create a modifier named "onlyOwner" to ensure that onlyowner is allowed to reveal winners.
+        Hint: Use require to validate if "msg.sender" is equal to the"beneficiary". */
+   
+   modifier onlyOwner {
+          require(msg.sender == beneficiary);
+           _;
+    }
     
-    function revealWinners() public {
+    function revealWinners() public onlyOwner{
 
         /* 
             Iterate over all the items present in the auction.
             If at least on person has placed a bid, randomly select the winner */
-
+       
         for (uint id = 0; id < 3; id++) {
             Item storage currentItem=items[id];
             if(currentItem.itemTokens.length != 0){
