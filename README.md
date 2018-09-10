@@ -11,13 +11,13 @@ contract Auction {
         
 //Structure to hold the details of a persons
  struct Person {
-     uint remainingTokens; /* tokens remaining with bidder*/
-     uint personId; /* it serves as tokenId as well*/
-     address addr;/*address of the bidder*/
+     uint remainingTokens; // tokens remaining with bidder
+     uint personId; // it serves as tokenId as well
+     address addr;//address of the bidder
 }
  
-      mapping(address => Person) tokenDetails; /*address to person*/
-       Person [4] bidders;//Array containing 4 person objects
+      mapping(address => Person) tokenDetails; //address to person
+      Person [4] bidders;//Array containing 4 person objects
       Item [3] public items;//Array containing 3 item objects
       address[3] public winners;//Array for address of winners
       address public beneficiary;//owner of the smart contract
@@ -43,7 +43,7 @@ contract Auction {
     }
     
 
-    function register() public payable{
+    function register(address beneficiary) public payable{
         
         bidders[bidderCount].personId = bidderCount;
         
@@ -76,15 +76,15 @@ contract Auction {
         */
         
         // ** Start code here. 2 lines approximately. **/
-        if(tokenDetails[msg.sender].remainingTokens < _count)return;
-        if(tokenDetails[msg.sender].remainingTokens == 0)return;
-        if (_itemId > 2) return;
+        if((tokenDetails[msg.sender].remainingTokens < _count)||(tokenDetails[msg.sender].remainingTokens == 0))revert();
+        //if(tokenDetails[msg.sender].remainingTokens == 0)return;
+        if (_itemId > 2) revert();
         //** End code here. **
         
         /*Part 1 Task 5. Decrement the remainingTokens by the number of tokens bid
         Hint. "tokenDetails[msg.sender].remainingTokens" should be decremented by "_count". */
  
-        // ** Start code here. 1 line approximately. **
+        /* Start code here. 1 line approximately. **/
         uint balance= tokenDetails[msg.sender].remainingTokens - _count;
         //** End code here. **
         
@@ -100,13 +100,13 @@ contract Auction {
    /*    For version 2, we need to add a modifier so that only the owner can invoke the function “revealWinner”.
         Part 2 Task 1. Create a modifier named "onlyOwner" to ensure that onlyowner is allowed to reveal winners.
         Hint: Use require to validate if "msg.sender" is equal to the"beneficiary". */
-   
-   modifier onlyOwner {
+    
+    modifier onlyOwner {
           require(msg.sender == beneficiary);
            _;
     }
     
-    function revealWinners() public onlyOwner{
+    function revealWinners(uint8 winner) public onlyOwner{
 
         /* 
             Iterate over all the items present in the auction.
